@@ -11,22 +11,50 @@
   "build": {
     "appId": "com.poliport.lojistik",
     "productName": "Poliport Lojistik",
-    "directories": { "output": "dist" },
-    "files": ["app/**/*", "main.js"],
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "app/**/*",
+      "main.js"
+    ],
     "win": {
       "target": [
-        {"target": "nsis",     "arch": ["x64"]},
-        {"target": "portable", "arch": ["x64"]}
-      ]
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
     },
     "mac": {
-      "target": [{"target": "dmg", "arch": ["x64", "arm64"]}],
-      "category": "public.app-category.business"
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.business",
+      "icon": "build/icon.png"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "installerLanguages": ["tr_TR", "en_US"],
+      "installerLanguages": [
+        "tr_TR",
+        "en_US"
+      ],
       "shortcutName": "Poliport Lojistik"
     }
   },

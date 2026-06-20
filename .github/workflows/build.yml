@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ── Web sitesi (GitHub Pages) — her zaman çalışır ─────
+  # ── Web sitesi (GitHub Pages) ──────────────────────────
   deploy-web:
     runs-on: ubuntu-latest
     permissions:
@@ -29,33 +29,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci --ignore-scripts || npm install
-      - run: npx electron-builder --win portable --x64
+      - name: Install dependencies
+        run: npm install
+      - name: Build Windows exe
+        run: npx electron-builder --win portable --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Lojistik-Windows-exe
+          name: Poliport-Windows-exe
           path: dist/*.exe
           if-no-files-found: warn
 
   # ── macOS .dmg ─────────────────────────────────────────
   build-mac:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci --ignore-scripts || npm install
-      - run: npx electron-builder --mac dmg --x64
+      - name: Install dependencies
+        run: npm install
+      - name: Build macOS dmg
+        run: npx electron-builder --mac dmg --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Lojistik-Mac-dmg
+          name: Poliport-Mac-dmg
           path: dist/*.dmg
           if-no-files-found: warn

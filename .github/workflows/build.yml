@@ -1,4 +1,4 @@
-name: Build & Deploy Poliport Lojistik
+name: Poliport Lojistik — Build & Deploy
 
 on:
   push:
@@ -6,13 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ── Web sitesi (GitHub Pages) ──────────────────────────
+  # ── Web sitesi (GitHub Pages) — her zaman çalışır ─────
   deploy-web:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to GitHub Pages
@@ -21,8 +19,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./app
           publish_branch: gh-pages
+          force_orphan: true
 
-  # ── Windows .exe kurulum dosyası ───────────────────────
+  # ── Windows .exe ───────────────────────────────────────
   build-windows:
     runs-on: windows-latest
     steps:
@@ -30,16 +29,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
-      - run: npm run dist-win
+          cache: 'npm'
+      - run: npm ci --ignore-scripts || npm install
+      - run: npx electron-builder --win portable --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Lojistik-Windows
+          name: Poliport-Lojistik-Windows-exe
           path: dist/*.exe
+          if-no-files-found: warn
 
-  # ── macOS .dmg kurulum dosyası ─────────────────────────
+  # ── macOS .dmg ─────────────────────────────────────────
   build-mac:
     runs-on: macos-latest
     steps:
@@ -47,11 +48,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
-      - run: npm run dist-mac
+          cache: 'npm'
+      - run: npm ci --ignore-scripts || npm install
+      - run: npx electron-builder --mac dmg --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
       - uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Lojistik-Mac
+          name: Poliport-Lojistik-Mac-dmg
           path: dist/*.dmg
+          if-no-files-found: warn

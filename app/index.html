@@ -112,9 +112,52 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 @media(max-width:600px){.two-col{grid-template-columns:1fr}.vcat-grid{grid-template-columns:1fr 1fr}}
 /* BADGE */
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;margin-left:4px}
+
+/* ── Custom ADR Cursor ── */
+*, *::before, *::after {
+  cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cG9seWdvbiBwb2ludHM9IjE2LDIgMzAsMTYgMTYsMzAgMiwxNiIgZmlsbD0iI0ZGNkIwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxwb2x5Z29uIHBvaW50cz0iMTYsNSAyNywxNiAxNiwyNyA1LDE2IiBmaWxsPSIjRkY4QzAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9Ii40Ii8+PHRleHQgeD0iMTYiIHk9IjIxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI2ZmZiI+ITwvdGV4dD48L3N2Zz4=') 16 16, crosshair !important;
+}
+button, .btn, .nb, .hc, .vcat, .sub-btn, .rsub-btn, [onclick], a {
+  cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cG9seWdvbiBwb2ludHM9IjE2LDIgMzAsMTYgMTYsMzAgMiwxNiIgZmlsbD0iI0ZGNkIwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxwb2x5Z29uIHBvaW50cz0iMTYsNSAyNywxNiAxNiwyNyA1LDE2IiBmaWxsPSIjRkY4QzAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9Ii40Ii8+PHRleHQgeD0iMTYiIHk9IjIxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI2ZmZiI+ITwvdGV4dD48L3N2Zz4=') 16 16, pointer !important;
+}
 </style>
 </head>
 <body>
+
+
+<!-- SPLASH SCREEN -->
+<div id="splash" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0d2b5e 0%,#1B4F8A 60%,#2980b9 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .7s ease">
+  <!-- ADR Diamond -->
+  <div style="margin-bottom:28px;animation:splashSpin 1.2s ease-out forwards">
+    <svg width="110" height="110" viewBox="0 0 110 110">
+      <polygon points="55,4 106,55 55,106 4,55" fill="#FF6B00" stroke="#fff" stroke-width="3"/>
+      <polygon points="55,18 92,55 55,92 18,55" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+      <text x="55" y="70" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="46" font-weight="900" fill="#fff">!</text>
+    </svg>
+  </div>
+  <div style="color:#fff;font-size:2rem;font-weight:900;letter-spacing:.06em;text-shadow:0 2px 12px rgba(0,0,0,.4)">POLİPORT</div>
+  <div style="color:rgba(255,255,255,.8);font-size:1rem;font-weight:600;letter-spacing:.18em;margin-top:4px;margin-bottom:32px">LOJİSTİK YÖNETİM</div>
+  <!-- Progress bar -->
+  <div style="width:220px;height:4px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden">
+    <div id="splash-bar" style="height:100%;width:0%;background:#FF6B00;border-radius:4px;transition:width 1.6s ease"></div>
+  </div>
+  <div style="color:rgba(255,255,255,.55);font-size:.75rem;margin-top:20px;letter-spacing:.06em">S. Seymen tarafından hazırlanmıştır</div>
+</div>
+<style>
+@keyframes splashSpin{from{transform:rotate(-30deg) scale(.6);opacity:0}to{transform:rotate(0deg) scale(1);opacity:1}}
+</style>
+<script>
+(function(){
+  var s=document.getElementById('splash');
+  var b=document.getElementById('splash-bar');
+  if(!s) return;
+  setTimeout(function(){if(b)b.style.width='100%';},80);
+  setTimeout(function(){
+    s.style.opacity='0';
+    setTimeout(function(){s.style.display='none';},750);
+  },2000);
+})();
+</script>
 
 <!-- HEADER -->
 <div class="hdr">
@@ -1493,5 +1536,9 @@ window.onload = function(){
   filterP();
 };
 </script>
+
+<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#8a9ab5;letter-spacing:.04em;border-top:1px solid #dde3ec;margin-top:24px">
+  <span style="font-weight:700;color:#1B4F8A">Poliport Lojistik</span> &nbsp;·&nbsp; Hazırlayan: <strong>S. Seymen</strong> &nbsp;·&nbsp; Tüm hakları saklıdır © 2025
+</div>
 </body>
 </html>

@@ -13,8 +13,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./app
@@ -26,40 +25,61 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        run: npm install
-      - name: Build Windows exe
-        run: npx electron-builder --win portable --x64
+
+      - name: Cache electron
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/AppData/Local/electron/Cache
+          key: electron-${{ runner.os }}-28
+
+      - name: Install
+        run: npm install --include=dev
+
+      - name: Build portable exe
+        run: npx --yes electron-builder --win portable --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifact
+          USE_HARD_LINKS: false
+
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Windows-exe
+          name: Poliport-Windows
           path: dist/*.exe
-          if-no-files-found: warn
 
   # ── macOS .dmg ─────────────────────────────────────────
   build-mac:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        run: npm install
-      - name: Build macOS dmg
-        run: npx electron-builder --mac dmg --x64
+
+      - name: Cache electron
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/electron
+          key: electron-${{ runner.os }}-28
+
+      - name: Install
+        run: npm install --include=dev
+
+      - name: Build dmg
+        run: npx --yes electron-builder --mac dmg --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-      - name: Upload artifact
+
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Poliport-Mac-dmg
+          name: Poliport-Mac
           path: dist/*.dmg
-          if-no-files-found: warn

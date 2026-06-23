@@ -925,7 +925,7 @@ function calcResult(){
 
 
   // Plates – ADR: info box only; non-ADR: nothing
-  const platesHTML=S.subtype&&S.subtype.endsWith('_d')?`<div class="rs">
+  const platesHTML=(S.subtype&&S.subtype.endsWith('_d')&&(S.cat==='tir'||S.cat==='container'))?`<div class="rs">
     <h3>🔶 Araç İşaretleme — Plaka &amp; Etiketler</h3>
     <div class="ibox">⚠️ Turuncu plakalar araç önü ve arkasına, tehlike ikaz levhaları her iki yan ve arkaya yerleştirilmelidir.</div>
   </div>`:'';
@@ -946,7 +946,7 @@ function calcResult(){
     return '<div style="position:absolute;left:'+p.l+'%;top:'+p.t+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:10">'+inner+'<div style="font-size:5px;font-weight:700;color:#fff;background:rgba(0,0,0,.72);padding:1px 2px;border-radius:2px;white-space:nowrap;margin-top:1px">'+p.lbl+'</div></div>';
   }
   var mkPinsHtml=mkIsADR?mkPins.map(mkPinHtml).join(''):'';
-  var vehicleMarkHTML=(mkPhoto&&mkIsADR)?'<div class="rs" style="background:#fff">'+
+  var vehicleMarkHTML=(mkPhoto&&mkIsADR&&(S.cat==='tir'||S.cat==='container'))?'<div class="rs" style="background:#fff">'+
     '<h3>🗺️ Araç İşaretleme</h3>'+
     '<div style="font-size:.78rem;color:#666;margin-bottom:8px">Seçili ürüne göre plaka konumları gösterilmektedir. Plakalar boş (numarasız) olarak yerleştirilmelidir.</div>'+
     '<div style="position:relative;display:inline-block;width:100%;max-width:580px">'+

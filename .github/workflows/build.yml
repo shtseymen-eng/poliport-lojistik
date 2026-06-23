@@ -1,4 +1,4 @@
-name: Poliport Lojistik — Build & Deploy
+name: Poliport Lojistik — Web Deploy
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ── Web sitesi (GitHub Pages) ──────────────────────────
   deploy-web:
     runs-on: ubuntu-latest
     permissions:
@@ -19,67 +18,3 @@ jobs:
           publish_dir: ./app
           publish_branch: gh-pages
           force_orphan: true
-
-  # ── Windows .exe ───────────────────────────────────────
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Cache electron
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/electron
-            ~/AppData/Local/electron/Cache
-          key: electron-${{ runner.os }}-28
-
-      - name: Install
-        run: npm install --include=dev
-
-      - name: Build portable exe
-        run: npx --yes electron-builder --win portable --x64
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USE_HARD_LINKS: false
-
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: Poliport-Windows
-          path: dist/*.exe
-
-  # ── macOS .dmg ─────────────────────────────────────────
-  build-mac:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Cache electron
-        uses: actions/cache@v4
-        with:
-          path: ~/Library/Caches/electron
-          key: electron-${{ runner.os }}-28
-
-      - name: Install
-        run: npm install --include=dev
-
-      - name: Build dmg
-        run: npx --yes electron-builder --mac dmg --x64
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: Poliport-Mac
-          path: dist/*.dmg

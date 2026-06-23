@@ -283,7 +283,7 @@ input[type=text], input[type=number], textarea {
     <button class="btn btnp" id="mtb-tanker"    onclick="showMarking('tanker')">🚛 Tanker</button>
     <button class="btn btns" id="mtb-isotank"   onclick="showMarking('isotank')">🏭 ISO Tank</button>
     <button class="btn btns" id="mtb-tir"       onclick="showMarking('tir')">🚚 TIR / Kamyon</button>
-    <button class="btn btns" id="mtb-container" onclick="showMarking('container')">📦 Konteyner</button>
+    <button class="btn btns" id="mtb-container" onclick="showMarking('container')">🚚 TIR Konteyner</button>
   </div>
   <div id="marking-content"></div>
 </div>
@@ -358,7 +358,7 @@ const VCATS = {
   tanker:    {label:'Tanker',                        icon:'🚛', subs:null, key:'tanker_d'},
   isotank:   {label:'ISO Tank Konteyner',             icon:'🏭', subs:null, key:'isotank_d'},
   tir:       {label:'TIR / Perdeli Kamyon',           icon:'🚚', subs:[{key:'tir_d',       label:'🔴 Tehlikeli (ADR tabi)'},{key:'tir_s',       label:'🟢 Tehlikesiz (ADR tabi değil)'}]},
-  container: {label:'ISO Konteyner / Kuru Konteyner', icon:'📦', subs:[{key:'container_d', label:'🔴 Tehlikeli (ADR tabi)'},{key:'container_s', label:'🟢 Tehlikesiz (ADR tabi değil)'}]}
+  container: {label:'TIR Konteyner', icon:'🚚', subs:[{key:'container_d', label:'🔴 Tehlikeli (ADR tabi)'},{key:'container_s', label:'🟢 Tehlikesiz (ADR tabi değil)'}]}
 };
 
 const VREQS = {
@@ -393,12 +393,12 @@ const VREQS = {
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet']},
     note:'ADR kapsamı dışındaki ürünler için standart belgeler yeterlidir.'},
-  container_d:{label:'Konteyner — Tehlikeli (ADR tabi)',icon:'📦',
+  container_d:{label:'TIR Konteyner — Tehlikeli (ADR tabi)',icon:'🚚',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'ÜRÜNE ÖZEL':['Ürüne uygun Turuncu Plaka ve İkaz Levhaları'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi']},
     note:'Tehlikeli madde taşımacılığında tüm ADR belgeleri eksiksiz bulundurulmalıdır.'},
-  container_s:{label:'Konteyner — Tehlikesiz (ADR tabi değil)',icon:'📦',
+  container_s:{label:'TIR Konteyner — Tehlikesiz (ADR tabi değil)',icon:'🚚',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet']},
     note:'Tehlikesiz yük için standart belgeler yeterlidir.'}
@@ -971,7 +971,7 @@ function calcResult(){
   </div>`:'' ;
 
   // Inline vehicle marking diagram
-  var mkCat=S.cat==='isotank'?'isotank':S.cat==='container'?'container':S.cat==='tir'?'tir':'tanker';
+  var mkCat=S.cat==='isotank'?'isotank':S.cat==='container'?'tir':S.cat==='tir'?'kamyon':'tanker';
   var mkPhoto=VEHICLE_PHOTOS[mkCat]||'';
   var mkIsADR=prods.length&&!!(prods[0].un&&prods[0].un.trim()&&!prods[0].un.toLowerCase().includes('adr'));
   var mkPins=(MARK_PINS[mkCat]||{})[S.qty]||[];
@@ -1076,7 +1076,7 @@ function buildReqPage(){
     {id:'g-tanker',   label:'🚛 Tanker',                          subs:[{key:'tanker_d',label:'Tehlikeli'},{key:'tanker_s',label:'Tehlikesiz'}]},
     {id:'g-isotank',  label:'🏭 ISO Tank Konteyner',               subs:[{key:'isotank_d',label:'Tehlikeli'},{key:'isotank_s',label:'Tehlikesiz'}]},
     {id:'g-tir',      label:'🚚 TIR / Perdeli Kamyon',             subs:[{key:'tir_d',label:'Tehlikeli'},{key:'tir_s',label:'Tehlikesiz'}]},
-    {id:'g-container',label:'📦 ISO Konteyner / Kuru Konteyner',   subs:[{key:'container_d',label:'Tehlikeli'},{key:'container_s',label:'Tehlikesiz'}]}
+    {id:'g-container',label:'TIR Konteyner',   subs:[{key:'container_d',label:'Tehlikeli'},{key:'container_s',label:'Tehlikesiz'}]}
   ];
   const wrap=document.getElementById('req-groups');
   if(!wrap||wrap.dataset.built) return;
@@ -1235,7 +1235,7 @@ const MARKING_DATA = {
     }
   },
   container:{
-    label:'ISO Konteyner / Kuru Konteyner',
+    label:'TIR Konteyner',
     tehlikeli:{
       title:'Konteyner — Tehlikeli (ADR tabi)',
       rules:[

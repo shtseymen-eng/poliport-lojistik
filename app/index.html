@@ -163,7 +163,7 @@ input[type=text], input[type=number], textarea {
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-inner">
-    <div class="logo">🏭</div>
+    <div class="logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAFVUlEQVR42u3XXWicVRoH8P9zzpmkybRpUjuZzrxt3NIgWFARlOrK1ta1sFvWqrCKQgUF0QtRqnjhR2Ua0gtBd1lkb1yQha3L7poLV/dDQaXR1a7iB4paEZtCGzMzmdRqpklmJvOe5+/FvDExO3H3YhfLcn43w3vOvGfOx3POeQYIgiAIgiAIgiAIgiAIgiAIvkfSvpiCwqhtV3Nl8nlgxw4cwCheHU0KhnbGSXt2hd+KVyh3AJi8SwD+bJ+ds435rq5Km2ei8Pce1Lv2QOMOGKegijGATtexcVMvog7De3dtdofHTsuTh09605Wa0S1XPZvZL50pye8DpJ+CFAAI0STwYbqn63fHjh3TZaupuUxUgMi4QHMUmS5NTvw6WXVd0i+/wkCWl+uS98yyNr4Jp0WFwxZDO2PUO3+Gnswh1M4AxsAZgXhi0+Z1uPWyCLsG+/BBeRYjH83CrO0FnQNMY2v3aWR1Q+ewj+e9EOPJFEbO2lTtTO0zAKP/MuMGD4P6T4qkhZwC8ASA+TaLs1Kof6s8159/hZBnypWJJ5Pt5Vce8GITDvVZj8ZsU0RcXI+Bpsfw9Rfj4MtjKFZ60bPK4XR5iq43jXh2pobdnSd8umdAqLGSj5UrxYcAIJeNHgAxTOGVuWx0OYhIIF6sTKKpIyQ+h6AqwpcBnMqvz18s1l5H+LUAaGBKavUpNnmJWLsd1DQhXsDj3c3uQzO2dq01uJCEClCGkasIDmzYEI2XyxMvLl/p9gMW8RAaEI5N735+aR5pK1jTYbH/xz/Amyen8fTbRZjuVNOn0inUv/gjIpnzG7d0OW06EZyTy+XWJ0GWIehAOWBEQOoLAGng7okNLoKgLhBH8naBHKflXhFeRsrzQvaINfvgNSdi9gJMEfIqwHONsffNpmoZK1IgeZzAuzQQIb0YcfBcl2wb8+9XWHSVESspgb/lio3OELh1Wx6/fG0cn0xUMVadZ73WjNGdTqExcwpxY38rMmJRKgRyB1TuaM2dwKtvCDBHYrJYKe5OQq8CYDUg0op8qQJogFjnqf8oV4rXbs1kVn+l8iWJdSLoUPK35cnivigbbSP5OsFeQFQEDxQnJ0YGBwc7587U7veqz5UrxaeT8cXLT7RFR6cIQJzwU63X5tN9vZ13X7GRH5Zm4r8ePRWXphvxxyem44ZXkZ7eFFRPIW5chyf2nGzNUzMWkZjEXwDeROpeEjcblW0A3ia5ZvHmA1v3H3wScrIQekZa/apOdfrkjNPku5oEoCaT5AGoUnsAuGq12pucvIrvuAMXjdzoUSgYHdr1Om778/Ybfxg9+tqJme23bD/P/eatEt7/vAmbzcDX5xqYrz2P5uyDeHz3GLbe0IGjI/MCUWuti9WPlSaLf1p2mDhrbBRlo2GS1ljb71U9wbUCWUNwDYg+AHOADEbZaNiTfc44533sAbEC2RNlo1mvPN9Z45SxGLGO0BSA2DkXw0NE5JpcbtOzpdL4G8v3cPv7ihSIsEOA+Zv/dgHOWXUp4DfL6g6SMgbHIzi447PWyU6DISEADgwM9MUN/ZWQRyYqE08tiaA435/fKcbcSdX1rdPZTHnEjxs1P6JIp4BVBfKGcjUE55F8r7UjzASsHqTnLhH7E6p2QYQAj8VqH3NGHwH196VK6SUAJpfN3eWM+2ns40OlSukP7U7q9go0rVujNSumXX2hYP7bWUOuP386n43e+V9lJW7FmiFRANACDTBq+K3KUV2ob5O4mIWk4j/IgJYmIRaAF+AXADPJ80IdV0iSlu79hS7aJUkIw7+Hs5Btt4OCIAiCIAiCIAiCIAiCIAiC/wtfA69Cain9EUahAAAAAElFTkSuQmCC" style="height:44px;width:auto;object-fit:contain;filter:brightness(0) invert(1)" alt="Poliport"/></div>
     <div><h1>POLİPORT</h1><p>ÜRÜN &amp; TAŞIMA YÖNETİMİ</p></div>
   </div>
   <nav>
@@ -1518,7 +1518,9 @@ window.onload = function(){
       card.className='vcat';
       card.id='vc-'+catKey;
       card.setAttribute('onclick','selCat("'+catKey+'")');
-      card.innerHTML='<div class="vcat-ico">'+cfg.icon+'</div><div class="vcat-lbl">'+cfg.label+'</div>';
+      const photoKey={tanker:'tanker',isotank:'isotank',tir:'kamyon',container:'tir'}[catKey];
+      const imgSrc=photoKey&&VEHICLE_PHOTOS[photoKey]?VEHICLE_PHOTOS[photoKey]:'';
+      card.innerHTML='<div class="vcat-ico" style="height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:6px">'+(imgSrc?'<img src="'+imgSrc+'" style="max-height:58px;max-width:130px;width:auto;object-fit:contain" alt="'+cfg.label+'"/>':cfg.icon)+'</div><div class="vcat-lbl">'+cfg.label+'</div>';
       grid.appendChild(card);
     });
   }

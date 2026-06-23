@@ -181,23 +181,23 @@ input[type=text], input[type=number], textarea {
   </div>
   <div class="home-grid">
     <a class="hc" href="#" onclick="goPage('products');return false">
-      <div class="hc-ico">📋</div>
+      
       <div class="hc-t">Ürün Listesi</div>
       <div class="hc-d">ADR kapsamlı ve kimya sevkiyat ürünlerini inceleyin. UN numaraları, tank kodları ve tehlike etiketlerini görün.</div>
     </a>
     <a class="hc" href="#" onclick="goPage('acquire');return false">
-      <div class="hc-ico">🚛</div>
+      
       <div class="hc-t">Ürün Alım</div>
       <div class="hc-d">Araç tipine göre ürün alım sürecini planlayın. Tank kodu uyumu, KKD gereklilikleri ve araç işaretlemesini öğrenin.</div>
     </a>
     <a class="hc" href="#" onclick="goPage('reqs');return false">
-      <div class="hc-ico">📄</div>
+      
       <div class="hc-t">Araç Gereklilikleri</div>
       <div class="hc-d">Tanker, ISO tank, TIR ve konteyner için gerekli belgeler, sürücü şartları ve KKD listelerini görüntüleyin.</div>
     </a>
 
     <a class="hc" href="#" onclick="goPage('marking');return false">
-      <div class="hc-ico">🗺️</div>
+      
       <div class="hc-t">Araç İşaretleme</div>
       <div class="hc-d">Araç tipine göre turuncu plaka ve ikaz levhası yerleşim rehberi. Tehlikeli ve tehlikesiz senaryolar.</div>
     </a>
@@ -228,14 +228,14 @@ input[type=text], input[type=number], textarea {
   </div>
   <!-- Araç Seçimi -->
   <div class="card">
-    <h3>🚗 Araç Kategorisi Seçin</h3>
+    <h3>Araç Kategorisi Seçin</h3>
     <div class="vcat-grid" id="vcat-grid"></div>
     <div id="sub-panel" style="display:none"></div>
     <div id="subtype-def" style="display:none;margin-top:12px"></div>
   </div>
   <!-- Ürün Adedi -->
   <div class="card" id="qty-card" style="display:none">
-    <h3>📦 Ürün Adedi</h3>
+    <h3>Ürün Adedi</h3>
     <div style="display:flex;gap:10px">
       <button class="btn btnp" id="bq1" onclick="selQty(1)" style="padding:11px 24px">1 Ürün</button>
       <button class="btn btns" id="bq2" onclick="selQty(2)" style="padding:11px 24px">2 Ürün</button>
@@ -243,7 +243,7 @@ input[type=text], input[type=number], textarea {
   </div>
   <!-- Ürün Seçimi -->
   <div class="card" id="psel-card" style="display:none">
-    <h3>🔍 Ürün Seçimi</h3>
+    <h3>Ürün Seçimi</h3>
     <div id="psel-wrap"></div>
     <div style="margin-top:14px">
       <button class="btn btnp" id="bcalc" onclick="calcResult()" style="display:none;padding:11px 28px">Hesapla →</button>
@@ -258,7 +258,7 @@ input[type=text], input[type=number], textarea {
 <!-- REQUIREMENTS -->
 <div id="page-reqs" class="page">
   <div class="card">
-    <h3>📄 Araç Tiplerine Göre Gereklilikler</h3>
+    <h3>Araç Tiplerine Göre Gereklilikler</h3>
     <div id="req-groups"></div>
     <div id="req-detail" style="margin-top:14px"></div>
   </div>
@@ -270,16 +270,16 @@ input[type=text], input[type=number], textarea {
 <div id="page-marking" class="page">
   <div class="card" style="background:linear-gradient(135deg,#1B4F8A,#2980b9);color:#fff;border:none;margin-bottom:16px">
     <div style="display:flex;align-items:center;gap:14px">
-      <span style="font-size:2.5rem">🗺️</span>
+      
       <div><h2 style="font-size:1.2rem;margin-bottom:4px">Araç İşaretleme Rehberi</h2>
       <p style="font-size:.82rem;opacity:.85">ADR kapsamında araç tiplerine göre turuncu plaka ve ikaz levhası yerleşim kuralları</p></div>
     </div>
   </div>
   <div id="marking-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
     <button class="btn btnp" id="mtb-tanker"    onclick="showMarking('tanker')">Tanker</button>
-    <button class="btn btns" id="mtb-isotank"   onclick="showMarking('isotank')">🏭 ISO Tank</button>
-    <button class="btn btns" id="mtb-tir"       onclick="showMarking('tir')">🚚 TIR / Kamyon</button>
-    <button class="btn btns" id="mtb-container" onclick="showMarking('container')">🚚 TIR Konteyner</button>
+    <button class="btn btns" id="mtb-isotank"   onclick="showMarking('isotank')">ISO Tank</button>
+    <button class="btn btns" id="mtb-tir"       onclick="showMarking('tir')">TIR / Kamyon</button>
+    <button class="btn btns" id="mtb-container" onclick="showMarking('container')">TIR Konteyner</button>
   </div>
   <div id="marking-content"></div>
 </div>
@@ -322,50 +322,50 @@ const VEHICLE_PHOTOS = {
 
 // ===== CONFIG =====
 const VCATS = {
-  tanker:    {label:'Tanker',                        icon:'🚛', subs:null, key:'tanker_d'},
-  isotank:   {label:'ISO Tank Konteyner',             icon:'🏭', subs:null, key:'isotank_d'},
-  tir:       {label:'TIR / Perdeli Kamyon',           icon:'🚚', subs:[{key:'tir_d',       label:'🔴 Tehlikeli (ADR tabi)'},{key:'tir_s',       label:'🟢 Tehlikesiz (ADR tabi değil)'}]},
-  container: {label:'TIR Konteyner', icon:'🚚', subs:[{key:'container_d', label:'🔴 Tehlikeli (ADR tabi)'},{key:'container_s', label:'🟢 Tehlikesiz (ADR tabi değil)'}]}
+  tanker:    {label:'Tanker',                        icon:'', subs:null, key:'tanker_d'},
+  isotank:   {label:'ISO Tank Konteyner',             icon:'', subs:null, key:'isotank_d'},
+  tir:       {label:'TIR / Perdeli Kamyon',           icon:'', subs:[{key:'tir_d',       label:'Tehlikeli (ADR tabi)'},{key:'tir_s',       label:'Tehlikesiz (ADR tabi değil)'}]},
+  container: {label:'TIR Konteyner', icon:'', subs:[{key:'container_d', label:'Tehlikeli (ADR tabi)'},{key:'container_s', label:'Tehlikesiz (ADR tabi değil)'}]}
 };
 
 const VREQS = {
-  tanker_d:{label:'Tanker — Tehlikeli (ADR tabi)',icon:'🚛',
+  tanker_d:{label:'Tanker — Tehlikeli (ADR tabi)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı','Tehlikeli Madde Zorunlu Mali Sorumluluk Sigortası'],
           'TANK BELGELERİ':['Taşıt Uygunluk Muayene Raporu (Tank Kodu–Litre)','Sızdırmazlık Raporu / Taşıt Uygunluk Raporu (T9)'],
           'ARAÇ İŞARETLEME':['Ürüne uygun Turuncu Plaka (ön ve arka)','Tehlike İkaz Levhaları','Tehlike Etiketleri'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi','İş Yeri Hekiminden Onaylı Yüksekte Çalışabilir Sağlık Raporu']},
     note:'ADR kapsamında tüm belgeler araçta bulundurulmalıdır.'},
-  tanker_s:{label:'Tanker — Tehlikesiz (ADR tabi değil)',icon:'🚛',
+  tanker_s:{label:'Tanker — Tehlikesiz (ADR tabi değil)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'TANK BELGELERİ':['Taşıt Uygunluk Muayene Raporu (Tank Kodu–Litre)','Sızdırmazlık Raporu'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','İş Yeri Hekiminden Onaylı Yüksekte Çalışabilir Sağlık Raporu']},
     note:'Tehlikesiz yük — ADR belgesi gerekmez.'},
-  isotank_d:{label:'ISO Tank — Tehlikeli (ADR tabi)',icon:'🏭',
+  isotank_d:{label:'ISO Tank — Tehlikeli (ADR tabi)',icon:'',
     docs:{'ÇEKİCİ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı','Tehlikeli Madde Sigortası'],
           'ISO TANK BELGELERİ':['Taşıt Uygunluk Muayene Raporu (Tank Kodu–Litre)','Sızdırmazlık Raporu / Hidrostatik Basınç Raporu','Interchange Belgesi (taşıyıcı imzalı)'],
           'ARAÇ İŞARETLEME':['Ürüne uygun Turuncu Plaka','Tehlike İkaz Levhaları','Tehlike Etiketleri'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi','İş Yeri Hekiminden Onaylı Yüksekte Çalışabilir Sağlık Raporu']},
     note:'ISO Tank alımlarında Interchange belgesi zorunludur.'},
-  isotank_s:{label:'ISO Tank — Tehlikesiz (ADR tabi değil)',icon:'🏭',
+  isotank_s:{label:'ISO Tank — Tehlikesiz (ADR tabi değil)',icon:'',
     docs:{'ÇEKİCİ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'ISO TANK BELGELERİ':['Taşıt Uygunluk Muayene Raporu (Tank Kodu–Litre)','Sızdırmazlık Raporu'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','İş Yeri Hekiminden Onaylı Yüksekte Çalışabilir Sağlık Raporu']},
     note:'Tehlikesiz yük — ADR belgesi gerekmez.'},
-  tir_d:{label:'TIR — Tehlikeli (ADR tabi)',icon:'🚚',
+  tir_d:{label:'TIR — Tehlikeli (ADR tabi)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı','Tehlikeli Madde Sigortası'],
           'ARAÇ İŞARETLEME':['Ürüne uygun Turuncu Plaka (ön ve arka)','Tehlike İkaz Levhaları','Tehlike Etiketleri'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi']},
     note:''},
-  tir_s:{label:'TIR — Tehlikesiz (ADR tabi değil)',icon:'🚚',
+  tir_s:{label:'TIR — Tehlikesiz (ADR tabi değil)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet']},
     note:'ADR kapsamı dışındaki ürünler için standart belgeler yeterlidir.'},
-  container_d:{label:'TIR Konteyner — Tehlikeli (ADR tabi)',icon:'🚚',
+  container_d:{label:'TIR Konteyner — Tehlikeli (ADR tabi)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'ÜRÜNE ÖZEL':['Ürüne uygun Turuncu Plaka ve İkaz Levhaları'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi']},
     note:'Tehlikeli madde taşımacılığında tüm ADR belgeleri eksiksiz bulundurulmalıdır.'},
-  container_s:{label:'TIR Konteyner — Tehlikesiz (ADR tabi değil)',icon:'🚚',
+  container_s:{label:'TIR Konteyner — Tehlikesiz (ADR tabi değil)',icon:'',
     docs:{'ARAÇ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet']},
     note:'Tehlikesiz yük için standart belgeler yeterlidir.'}
@@ -414,14 +414,14 @@ const LABEL_CFG = {
 };
 
 const TDI_MDI_RULES = [
-  '🔄 Kapalı çevrim yükleme zorunludur (sıvı hat + gaz dönüş hortumu birlikte bağlanmalıdır).',
-  '🔧 Dolum hattı (dip-tube) tank zeminine kadar inmelidir; gaz dönüş hattında dip-tube OLMAMALIDIR.',
-  '🏷️ Tüm bağlantılar dayanıklı, gravürlü metal etiketlerle işaretlenmelidir (en az İngilizce).',
-  '📊 Manometre isotank üzerinde montajlı ve çalışır durumda olmalıdır (200-300 mbar azot beklenir).',
-  '🔩 Hortum bağlantı noktalarındaki cıvatalar sabit (saplama) tipte olmalıdır.',
-  "📋 Yükleme öncesi taşıyıcı firma imzalı sorumluluk yazısı Poliport'a iletilmelidir.",
+  ' Kapalı çevrim yükleme zorunludur (sıvı hat + gaz dönüş hortumu birlikte bağlanmalıdır).',
+  ' Dolum hattı (dip-tube) tank zeminine kadar inmelidir; gaz dönüş hattında dip-tube OLMAMALIDIR.',
+  ' Tüm bağlantılar dayanıklı, gravürlü metal etiketlerle işaretlenmelidir (en az İngilizce).',
+  ' Manometre isotank üzerinde montajlı ve çalışır durumda olmalıdır (200-300 mbar azot beklenir).',
+  ' Hortum bağlantı noktalarındaki cıvatalar sabit (saplama) tipte olmalıdır.',
+  " Yükleme öncesi taşıyıcı firma imzalı sorumluluk yazısı Poliport'a iletilmelidir.",
   '📋 Interchange belgesi eksiksiz ve firma yetkilisi tarafından doldurulmuş olmalıdır.',
-  '⚠️ Tam Yüz Maskesi ve Kimyasal Tulum (TYCHEM) bu ürünlerde zorunludur.'
+  ' Tam Yüz Maskesi ve Kimyasal Tulum (TYCHEM) bu ürünlerde zorunludur.'
 ];
 
 
@@ -1009,7 +1009,7 @@ function calcResult(){
 
   document.getElementById('acq-res').innerHTML=`
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-      <div style="font-size:2rem">${vr.icon}</div>
+      <div style="font-size:2rem"></div>
       <div><h2 style="color:var(--pr);font-size:1.1rem">${vr.label}</h2>
         ${prods.length?`<p style="color:#666;font-size:.81rem">${prods.map(p=>p.name).join(' + ')}</p>`:''}</div>
       <button class="btn btns" onclick="resetAcq()" style="margin-left:auto">↺ Yeniden Başla</button>
@@ -1053,7 +1053,7 @@ function showReq(key, btn){
   if(!vr) return;
   const useSimple=isSimpleKKD(key);
   const activeKKD=useSimple?KKD_SIMPLE:KKD_STD;
-  let html=`<div class="card"><h3>${vr.icon} ${vr.label}</h3>`;
+  let html=`<div class="card"><h3> ${vr.label}</h3>`;
   Object.entries(vr.docs).forEach(([cat,items])=>{
     html+=`<div class="doc-sec"><h4>${cat}</h4>${items.map(d=>`<div class="doc-i"><span class="chk">✓</span>${d}</div>`).join('')}</div>`;
   });

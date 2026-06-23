@@ -924,18 +924,11 @@ function calcResult(){
   </div>`:''; // no mdiDL when not MDI
 
 
-  // Plates + diamonds
-  const platesHTML=prods.length?`<div class="rs">
+  // Plates – ADR: info box only; non-ADR: nothing
+  const platesHTML=S.subtype&&S.subtype.endsWith('_d')?`<div class="rs">
     <h3>🔶 Araç İşaretleme — Plaka &amp; Etiketler</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
-    ${prods.map(p=>{const cls=getHazardClasses(p.hazard);return `<div style="text-align:center">
-      <div style="font-size:.75rem;color:#666;margin-bottom:5px;font-weight:700">${p.name}</div>
-      ${p.hazard?plateSVG(p.hazard,p.un):''}
-      <div class="diamonds" style="justify-content:center;margin-top:6px">${cls.map(c=>diamondSVG(c)).join('')}</div>
-    </div>`;}).join('')}
-    </div>
-    <div class="ibox" style="margin-top:10px">⚠️ Turuncu plakalar araç önü ve arkasına, tehlike ikaz levhaları her iki yan ve arkaya yerleştirilmelidir.</div>
-  </div>`:'' ;
+    <div class="ibox">⚠️ Turuncu plakalar araç önü ve arkasına, tehlike ikaz levhaları her iki yan ve arkaya yerleştirilmelidir.</div>
+  </div>`:'';
 
   // Inline vehicle marking diagram
   var mkCat=S.cat==='isotank'?'isotank':S.cat==='container'?'tir':S.cat==='tir'?'kamyon':'tanker';
@@ -947,33 +940,19 @@ function calcResult(){
   var mkCls=prods.length?getHazardClasses(prods[0].hazard):[];
   var mkFirstCls=mkCls[0]||'';
   function mkPinHtml(p){
-    var inner='';
-    if(p.ty==='DMD'){
-      if(!mkIsADR||!mkFirstCls) return '';
-      var c=LABEL_CFG[mkFirstCls]||{bg:'#e63946',tc:'#fff'};
-      inner='<div style="width:22px;height:22px;background:'+c.bg+';border:1.5px solid #000;transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5)"><span style="transform:rotate(-45deg);font-size:7px;font-weight:900;color:'+c.tc+'">'+mkFirstCls+'</span></div>';
-    } else if(p.ty==='PLT'){
-      if(mkIsADR&&mkHazNo&&mkUnNo){
-        inner='<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:30px;height:22px;display:flex;flex-direction:column;align-items:center;justify-content:space-around;box-shadow:0 2px 4px rgba(0,0,0,.5)"><div style="font-size:6px;font-weight:900;color:#000;line-height:1">'+mkHazNo+'</div><div style="height:1px;background:#000;width:100%"></div><div style="font-size:6px;font-weight:900;color:#000;line-height:1">'+mkUnNo+'</div></div>';
-      } else {
-        inner='<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:26px;height:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5)"><div style="width:22px;height:1px;background:#000"></div></div>';
-      }
-    } else { // PLT_B
-      inner='<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:26px;height:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5)"><div style="width:22px;height:1px;background:#000"></div></div>';
-    }
+    if(p.ty==='DMD') return ''; // no diamonds – blank mode
+    // PLT / PLT_B – always blank orange, no numbers
+    var inner='<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:26px;height:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.5)"><div style="width:22px;height:1px;background:#000"></div></div>';
     return '<div style="position:absolute;left:'+p.l+'%;top:'+p.t+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:10">'+inner+'<div style="font-size:5px;font-weight:700;color:#fff;background:rgba(0,0,0,.72);padding:1px 2px;border-radius:2px;white-space:nowrap;margin-top:1px">'+p.lbl+'</div></div>';
   }
   var mkPinsHtml=mkIsADR?mkPins.map(mkPinHtml).join(''):'';
-  var vehicleMarkHTML=mkPhoto?'<div class="rs" style="background:#fff">'+
+  var vehicleMarkHTML=(mkPhoto&&mkIsADR)?'<div class="rs" style="background:#fff">'+
     '<h3>🗺️ Araç İşaretleme</h3>'+
-    (mkIsADR?'<div style="font-size:.78rem;color:#666;margin-bottom:8px">Seçili ürüne göre plaka ve ikaz levhası konumları gösterilmektedir.</div>':
-             '<div style="font-size:.78rem;color:#2d6a2d;background:#e8f8e8;border-radius:6px;padding:6px 10px;margin-bottom:8px">✅ Tehlikesiz yük — turuncu plaka veya ikaz levhası takılmaz.</div>')+
+    '<div style="font-size:.78rem;color:#666;margin-bottom:8px">Seçili ürüne göre plaka konumları gösterilmektedir. Plakalar boş (numarasız) olarak yerleştirilmelidir.</div>'+
     '<div style="position:relative;display:inline-block;width:100%;max-width:580px">'+
       '<img src="'+mkPhoto+'" style="width:100%;border-radius:8px;display:block" alt="Araç"/>'+
       mkPinsHtml+
-      (mkIsADR?
-        '<div style="position:absolute;top:6px;left:6px;background:rgba(200,100,0,.9);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px">🔶 ADR İşaretli</div>':
-        '<div style="position:absolute;top:6px;left:6px;background:rgba(45,106,45,.85);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px">✅ İşaretleme Gerekmez</div>')+
+      '<div style="position:absolute;top:6px;left:6px;background:rgba(200,100,0,.9);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px">🔶 ADR İşaretli</div>'+
     '</div>'+
   '</div>':'';
 

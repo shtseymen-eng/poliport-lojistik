@@ -624,7 +624,7 @@ function renderVehicleMarking(cat,qty,products,options){
   const photo=VEHICLE_PHOTOS[photoKey]||VEHICLE_PHOTOS.tanker;
   const pins=((MARK_PINS[cat]||{})[qty]||(MARK_PINS[cat]||{})[1]||[]);
   const multiple=adrProducts.length>1;
-  const plateWidth=cat==='isotank'?52:64;
+  const plateWidth=48;
 
   function platesForPin(pin){
     const blank=pin.ty==='PLT_B'||(multiple&&(pin.lbl==='ÖN'||pin.lbl==='ARKA'));
@@ -1100,8 +1100,8 @@ function showReq(key, btn){
     } else {
       var blank=!isADR||p.ty==='PLT_B';
       inner=blank?
-        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:32px;height:20px;display:flex;align-items:center;justify-content:center"><div style="width:26px;height:1.5px;background:#000"></div></div>':
-        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:36px;height:26px;display:flex;flex-direction:column;align-items:center;justify-content:space-around"><div style="font-size:7px;font-weight:900">33</div><div style="height:1.5px;background:#000;width:100%"></div><div style="font-size:7px;font-weight:900">1230</div></div>';
+        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:27px;height:17px;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:1.5px;background:#000"></div></div>':
+        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:30px;height:22px;display:flex;flex-direction:column;align-items:center;justify-content:space-around"><div style="font-size:6px;font-weight:900">33</div><div style="height:1.5px;background:#000;width:100%"></div><div style="font-size:6px;font-weight:900">1230</div></div>';
     }
     return '<div style="position:absolute;left:'+p.l+'%;top:'+p.t+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:10">'+inner+'<div style="font-size:5px;font-weight:700;color:#fff;background:rgba(0,0,0,.72);padding:1px 2px;border-radius:2px;margin-top:1px;white-space:nowrap">'+p.lbl+'</div></div>';
   }
@@ -1352,30 +1352,31 @@ const VEHICLE_SVG_VIEWS = {
   </svg>`
 };
 
-window.mkS={cat:'tanker',qty:1,prods:[null,null]};
+window.mkS={cat:'tanker',qty:1,prods:[null,null],prepared:false};
 
 function showMarking(cat){
   document.querySelectorAll('[id^="mtb-"]').forEach(function(b){ b.className='btn btns'; });
   var mb=document.getElementById('mtb-'+cat);
   if(mb) mb.className='btn btnp';
-  mkS.cat=cat; mkS.prods=[null,null];
+  mkS.cat=cat; mkS.prods=[null,null]; mkS.prepared=false;
   renderMarking();
 }
 
 function buildMarkingPage(){
-  mkS={cat:'tanker',qty:1,prods:[null,null]};
+  mkS={cat:'tanker',qty:1,prods:[null,null],prepared:false};
   showMarking('tanker');
 }
 
 function buildMarkingContent(cat){ showMarking(cat); }
 
 function setMkQty(n){
-  mkS.qty=n; mkS.prods=[null,null];
+  mkS.qty=n; mkS.prods=[null,null]; mkS.prepared=false;
   renderMarking();
 }
 
 function setMkProd(idx,name){
   mkS.prods[idx]=PRODUCTS.find(function(p){return p.name===name;})||null;
+  mkS.prepared=false;
   renderMarking();
 }
 
@@ -1389,7 +1390,7 @@ function renderMkProdSelectors(){
     h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;min-width:0">'+
       '<label style="font-size:.77rem;font-weight:700;color:#1B4F8A;white-space:nowrap">'+(mkS.qty>1?'Ürün '+(i+1)+':':'Ürün:')+'</label>'+
       '<select onchange="setMkProd('+i+',this.value)" style="flex:1;min-width:0;width:100%;max-width:100%;padding:5px 8px;border:1.5px solid #c0cfe0;border-radius:7px;font-size:.77rem">'+
-        '<option value="">— Seçiniz (opsiyonel) —</option>'+
+        '<option value="">— Ürün seçin —</option>'+
         sorted.map(function(p){
           var sel=(cur&&cur.name===p.name)?' selected':'';
           return '<option value="'+p.name.replace(/"/g,'&quot;')+'"'+sel+'>'+p.name+(p.un?' ('+p.un+')':'')+'</option>';
@@ -1399,25 +1400,29 @@ function renderMkProdSelectors(){
   w.innerHTML=h;
 }
 
-function selectMkBySearch(){
-  var input=document.getElementById('mk-search');
-  var message=document.getElementById('mk-search-msg');
-  if(!input) return;
-  var query=(input.value||'').trim().toLocaleLowerCase('tr');
-  var unMatch=query.match(/(?:un\s*)?(\d{4})/i);
-  var product=PRODUCTS.find(function(item){
-    var name=(item.name||'').toLocaleLowerCase('tr');
-    return name===query||(unMatch&&getUnNumber(item)===unMatch[1]);
-  })||PRODUCTS.find(function(item){
-    return (item.name||'').toLocaleLowerCase('tr').includes(query);
-  });
-  if(!query||!product){
-    if(message) message.textContent='Eşleşen ürün veya UN numarası bulunamadı.';
-    return;
-  }
-  mkS.qty=1;
-  mkS.prods=[product,null];
+function prepareMarking(){
+  var selected=mkS.prods.slice(0,mkS.qty);
+  if(selected.some(function(product){return !product;})) return;
+  mkS.prepared=true;
   renderMarking();
+}
+
+function renderMarkingRequirements(cat,isADR){
+  var keyMap={
+    tanker:isADR?'tanker_d':'tanker_s',
+    isotank:isADR?'isotank_d':'isotank_s',
+    tir:isADR?'tir_d':'tir_s',
+    container:isADR?'container_d':'container_s'
+  };
+  var vr=VREQS[keyMap[cat]];
+  if(!vr) return '';
+  var sections=Object.entries(vr.docs).map(function(entry){
+    return '<div class="doc-sec"><h4>'+entry[0]+'</h4>'+entry[1].map(function(item){
+      return '<div class="doc-i"><span class="chk"></span>'+item+'</div>';
+    }).join('')+'</div>';
+  }).join('');
+  return '<div class="card" style="padding:14px;margin-bottom:14px"><h3 style="margin-bottom:10px">Araç Gereklilikleri — '+vr.label+'</h3>'+sections+
+    (vr.note?'<div class="ibox" style="margin-top:10px">ℹ️ '+vr.note+'</div>':'')+'</div>';
 }
 
 function renderMarking(){
@@ -1425,12 +1430,15 @@ function renderMarking(){
   if(!wrap) return;
   var cat=mkS.cat;
   var d=MARKING_DATA[cat]; if(!d) return;
-  var prods=mkS.prods.slice(0,mkS.qty).filter(Boolean);
+  var selectedProds=mkS.prods.slice(0,mkS.qty).filter(Boolean);
+  var selectionReady=selectedProds.length===mkS.qty;
+  var prods=mkS.prepared?selectedProds:[];
   var first=prods[0]||null;
   var isADR=prods.some(isAdrProduct);
-  var searchValue=first?((first.un?first.un+' — ':'')+first.name):'';
-  var datalist=[...PRODUCTS].sort(function(a,b){return a.name.localeCompare(b.name,'tr');}).map(function(product){
-    return '<option value="'+(product.un?product.un+' — ':'')+product.name.replace(/"/g,'&quot;')+'"></option>';
+  var ruleProduct=prods.find(isAdrProduct)||first;
+  var productCards=prods.map(function(product,index){
+    var prefix=mkS.qty>1?'Ürün '+(index+1)+' — ':'';
+    return '<div class="card" style="padding:14px"><h3 style="margin-bottom:10px">'+prefix+product.name+'</h3>'+renderProductFacts(product)+'</div>';
   }).join('');
 
   function rulesTable(sec,product){
@@ -1468,17 +1476,16 @@ function renderMarking(){
         '</div></div>'+
       '<div style="flex:1;min-width:200px"><div style="font-size:.74rem;font-weight:700;color:#1B4F8A;margin-bottom:5px">Ürün Seçimi</div>'+
         '<div id="mk-prod-wrap"></div></div>'+
+      '<div style="align-self:flex-end"><button id="mk-prepare" class="btn btnp" onclick="prepareMarking()" '+(selectionReady?'':'disabled')+
+        ' style="padding:8px 18px;font-size:.78rem;'+(selectionReady?'':'opacity:.5;cursor:not-allowed')+'">İşaretlemeyi Hazırla</button></div>'+
     '</div>'+
-    '<div class="card" style="padding:14px;margin-bottom:14px">'+
-      '<div style="font-size:.76rem;font-weight:700;color:#1B4F8A;margin-bottom:6px">Ürün adı veya UN numarasıyla bul</div>'+
-      '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="mk-search" list="mk-product-list" value="'+searchValue.replace(/"/g,'&quot;')+'" placeholder="Örn. UN 1093 veya Aseton" onkeydown="if(event.key===\'Enter\')selectMkBySearch()" style="flex:1;min-width:230px;padding:9px 12px;border:1.5px solid #c0cfe0;border-radius:8px"><button class="btn btnp" onclick="selectMkBySearch()">Bul</button></div>'+
-      '<datalist id="mk-product-list">'+datalist+'</datalist><div id="mk-search-msg" style="font-size:.74rem;color:#c0392b;margin-top:5px"></div>'+
-    '</div>'+
-    (first?'<div class="card" style="padding:14px"><h3 style="margin-bottom:10px">'+first.name+'</h3>'+renderProductFacts(first)+'</div>':'<div class="ibox" style="margin-bottom:14px">İşaretlemeyi görmek için ürün listesinden seçim yapın veya UN numarasıyla arayın.</div>')+
+    (mkS.prepared&&first?productCards:'<div class="ibox" style="margin-bottom:14px">Ürün seçimini tamamlayıp <strong>İşaretlemeyi Hazırla</strong> düğmesine basın.</div>')+
     (isADR?'<div style="background:#fff;border:2px solid #e63946;border-radius:12px;overflow:hidden;margin-bottom:14px">'+
       '<div style="padding:9px 14px;background:#fdecea;border-bottom:1px solid #f5c6c6"><h3 style="color:#c0392b;font-size:.84rem">Tehlikeli Yük — ADR İşaretleme Konumları</h3><p style="font-size:.72rem;color:#777;margin:2px 0">Seçili ürün verisine göre otomatik oluşturuldu</p></div>'+
-      '<div style="padding:10px">'+renderVehicleMarking(cat,mkS.qty,prods)+'</div>'+rulesTable(d.tehlikeli,first)+'</div>':
+      '<div style="padding:10px">'+renderVehicleMarking(cat,mkS.qty,prods)+'</div>'+rulesTable(d.tehlikeli,ruleProduct)+'</div>':
       (first?'<div class="ibox" style="background:#eef7ef;border-left-color:#2f855a;color:#276749">Bu ürün ADR kapsamında değildir; araç üzerinde ADR plakası veya etiketi gösterilmez.</div>':''));
+
+  if(mkS.prepared&&first) wrap.innerHTML+=renderMarkingRequirements(cat,isADR);
 
   renderMkProdSelectors();
 }

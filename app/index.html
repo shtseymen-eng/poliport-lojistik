@@ -52,6 +52,8 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 .marking-stage>img{width:100%;border-radius:9px;display:block}
 .marking-pin{position:absolute;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:3px;z-index:10}
 .marking-pin .adr-label{filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+.isotank-marking-summary{max-width:720px;margin-top:8px;padding:9px 11px;border:1px solid #d8e2ee;border-radius:8px;background:#f7f9fc;font-size:.72rem;line-height:1.55;color:#364152}
+.isotank-marking-summary strong{color:var(--pr)}
 .product-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .product-fact{background:#fff;border:1px solid #e1e7ef;border-radius:8px;padding:9px 10px;min-height:58px}
 .product-fact small{display:block;color:#718096;margin-bottom:4px}
@@ -392,6 +394,7 @@ const VREQS = {
     note:'Tehlikesiz yük — ADR belgesi gerekmez.'},
   isotank_d:{label:'ISO Tank — Tehlikeli (ADR tabi)',icon:'',
     docs:{'ÇEKİCİ BELGELERİ':['Araç Ruhsatı','Zorunlu Trafik Sigortası Poliçesi','Araç Muayene Belgesi','Taşıt Kartı','Tehlikeli Madde Sigortası'],
+          'DORSE BELGELERİ':['Dorse Taşıt Uygunluk Belgesi (T9)'],
           'ISO TANK BELGELERİ':['Taşıt Uygunluk Muayene Raporu (Tank Kodu–Litre)','Sızdırmazlık Raporu / Hidrostatik Basınç Raporu','Interchange Belgesi (taşıyıcı imzalı)'],
           'ARAÇ İŞARETLEME':['Ürüne uygun Turuncu Plaka','Tehlike İkaz Levhaları','Tehlike Etiketleri'],
           'SÜRÜCÜ BELGELERİ':['Ehliyet','SRC5 / ADR Eğitim Belgesi','İş Yeri Hekiminden Onaylı Yüksekte Çalışabilir Sağlık Raporu']},
@@ -494,17 +497,16 @@ const MARK_PINS={
   },
   isotank:{
     1:[
-      {l:10,t:60,ty:'PLT_B',  lbl:'ÖN'},
-      {l:58,t:33,ty:'DMD',    lbl:'YAN'},
-      {l:58,t:60,ty:'PLT',    lbl:'YAN'},
-      {l:87,t:60,ty:'PLT_B',  lbl:'ARKA'},
+      {l:10,t:60,ty:'PLT_B',  lbl:'ÇEKİCİ ÖN'},
+      {l:58,t:33,ty:'DMD',    lbl:'TANK 4 YÜZ'},
+      {l:58,t:60,ty:'PLT',    lbl:'TANK 2 YAN'},
+      {l:87,t:60,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
     ],
     2:[
-      {l:10,t:60,ty:'PLT',    lbl:'ÖN'},
-      {l:52,t:33,ty:'DMD',    lbl:'YAN'},
-      {l:62,t:33,ty:'DMD',    lbl:'YAN'},
-      {l:57,t:60,ty:'PLT',    lbl:'YAN'},
-      {l:87,t:60,ty:'PLT',    lbl:'ARKA'},
+      {l:10,t:60,ty:'PLT_B',  lbl:'ÇEKİCİ ÖN'},
+      {l:57,t:33,ty:'DMD',    lbl:'TANK 4 YÜZ'},
+      {l:57,t:60,ty:'PLT',    lbl:'TANK 2 YAN'},
+      {l:87,t:60,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
     ],
   },
   tir:{
@@ -632,11 +634,17 @@ function renderVehicleMarking(cat,qty,products,options){
     return `<div class="marking-pin" style="left:${pin.l}%;top:${pin.t}%">${content}</div>`;
   }).join('');
 
+  const isotankSummary=cat==='isotank'?`<div class="isotank-marking-summary">
+    <div><strong>İkaz levhaları — 4 yüz:</strong> tank ön, tank arka, tank sağ yan ve tank sol yan.</div>
+    <div><strong>Yazılı turuncu plaka — 2 yan:</strong> yalnızca tank sağ yan ve tank sol yan.</div>
+    <div><strong>Boş turuncu plaka:</strong> çekici önü ve dorse alt/arka bölümü.</div>
+  </div>`:'';
+
   return `<div class="marking-stage">
     <img src="${photo}" alt="${MARKING_DATA[cat]?MARKING_DATA[cat].label:'Araç'} işaretleme görünümü">
     ${pinHtml}
     <div style="position:absolute;top:7px;left:7px;background:rgba(143,76,0,.92);color:#fff;font-size:.68rem;font-weight:800;padding:4px 9px;border-radius:5px">ADR İŞARETLEME</div>
-  </div>`;
+  </div>${isotankSummary}`;
 }
 
 function isMDITDI(name){ return ['MDI','TDI'].some(w=>(name||'').toUpperCase().includes(w)); }
@@ -1079,9 +1087,10 @@ function showReq(key, btn){
       if(!isADR) return '';
       inner='<div style="width:26px;height:26px;background:#e63946;border:1.5px solid #000;transform:rotate(45deg);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(-45deg);font-size:7px;font-weight:900;color:#fff">3</span></div>';
     } else {
-      inner=isADR?
-        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:36px;height:26px;display:flex;flex-direction:column;align-items:center;justify-content:space-around"><div style="font-size:7px;font-weight:900">33</div><div style="height:1.5px;background:#000;width:100%"></div><div style="font-size:7px;font-weight:900">1230</div></div>':
-        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:32px;height:20px;display:flex;align-items:center;justify-content:center"><div style="width:26px;height:1.5px;background:#000"></div></div>';
+      var blank=!isADR||p.ty==='PLT_B';
+      inner=blank?
+        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:32px;height:20px;display:flex;align-items:center;justify-content:center"><div style="width:26px;height:1.5px;background:#000"></div></div>':
+        '<div style="background:#ff8c00;border:2px solid #000;border-radius:2px;width:36px;height:26px;display:flex;flex-direction:column;align-items:center;justify-content:space-around"><div style="font-size:7px;font-weight:900">33</div><div style="height:1.5px;background:#000;width:100%"></div><div style="font-size:7px;font-weight:900">1230</div></div>';
     }
     return '<div style="position:absolute;left:'+p.l+'%;top:'+p.t+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:10">'+inner+'<div style="font-size:5px;font-weight:700;color:#fff;background:rgba(0,0,0,.72);padding:1px 2px;border-radius:2px;margin-top:1px;white-space:nowrap">'+p.lbl+'</div></div>';
   }
@@ -1148,7 +1157,7 @@ const MARKING_DATA = {
       title:'ISO Tank — Tehlikeli (ADR tabi)',
       rules:[
         {pos:'ÇEKİCİ ÖN',          plate:'Boş Turuncu Plaka',    label:'—'},
-        {pos:'DORSE ARKA',          plate:'Boş Turuncu Plaka',    label:'—'},
+        {pos:'DORSE ALT/ARKA',      plate:'Boş Turuncu Plaka',    label:'—'},
         {pos:'ISO TANK SAĞ YAN',    plate:'Yazılı Turuncu Plaka', label:'İkaz Etiketi'},
         {pos:'ISO TANK SOL YAN',    plate:'Yazılı Turuncu Plaka', label:'İkaz Etiketi'},
         {pos:'ISO TANK ÖN',         plate:'—',                    label:'İkaz Etiketi'},
@@ -1156,7 +1165,7 @@ const MARKING_DATA = {
       ],
       notes:[
         ' ISO tankın 4 tarafına ikaz etiketleri yapıştırılır (ön, arka, sağ, sol)',
-        ' Çekici ön ve dorse arkası boş turuncu plaka; ISO tank yanları yazılı plaka',
+        ' Çekici önü ve dorse alt/arka bölümü boş turuncu plaka; ISO tankın yalnızca iki yanı yazılı turuncu plaka',
         ' MDI/TDI ürünlerde Interchange belgesi ve sorumluluk yazısı zorunludur'
       ]
     },

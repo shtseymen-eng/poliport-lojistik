@@ -225,6 +225,11 @@ input[type=text], input[type=number], textarea {
         <option value="1">Sadece ADR</option>
         <option value="0">ADR Dışı</option>
       </select>
+      <select id="psource" onchange="filterP()" aria-label="Ürün kaynağı">
+        <option value="">Tümü</option>
+        <option value="poliport">Poliport</option>
+        <option value="polisan">Polisan Kimya</option>
+      </select>
     </div>
     <div id="ptable-wrap"></div>
   </div>
@@ -694,12 +699,15 @@ function goPage(id){
 function filterP(){
   const q=(document.getElementById('psearch').value||'').toLowerCase();
   const adr=document.getElementById('padr').value;
+  const source=document.getElementById('psource').value;
   const filt=PRODUCTS.filter(p=>{
     const n=(p.name||'').toLowerCase(), u=(p.un||'').toLowerCase();
     const mQ=!q||n.includes(q)||u.includes(q)||(p.tank_code||'').toLowerCase().includes(q)||(p.adr_desc||'').toLowerCase().includes(q);
     const hasUn=!!(p.un&&p.un.trim()&&!p.un.toLowerCase().includes('adr'));
     const mA=!adr||(adr==='1'&&hasUn)||(adr==='0'&&!hasUn);
-    return mQ&&mA;
+    const productSource=p.source==='KİMYA'?'polisan':'poliport';
+    const mS=!source||source===productSource;
+    return mQ&&mA&&mS;
   });
   const wrap=document.getElementById('ptable-wrap');
   if(!wrap) return;

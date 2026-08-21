@@ -45,6 +45,7 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 .tag.cur{background:var(--pr);color:#fff}
 .diamonds{display:flex;gap:4px;flex-wrap:nowrap;align-items:center}
 .adr-label{display:inline-block;vertical-align:middle;flex:0 0 auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+.kemler-plate{display:inline-block;vertical-align:middle;flex:0 0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.38))}
 .source-logo{display:block;width:58px;height:34px;object-fit:contain;margin:auto;transform:scale(1.55)}
 .vehicle-type{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 9px;border-radius:12px;background:#e8f0fb;color:var(--pr);font-size:.72rem;font-weight:800}
 .marking-stage{position:relative;display:inline-block;width:100%;max-width:720px}
@@ -150,7 +151,7 @@ input[type=text], input[type=number], textarea {
 <style>
 @keyframes splashSpin{from{transform:rotate(-30deg) scale(.6);opacity:0}to{transform:rotate(0deg) scale(1);opacity:1}}
 </style>
-<script src="adr-assets.js?v=20260821"></script>
+<script src="adr-assets.js?v=20260821-2"></script>
 <script>
 (function(){
   var s=document.getElementById('splash');
@@ -580,8 +581,11 @@ function diamondSVG(code,size){
 
 function plateSVG(h,u){
   const un=(u||'').replace(/UN\s*/i,'').trim().substring(0,4);
-  if(!h&&!un) return `<div aria-label="Boş turuncu plaka" style="display:inline-flex;width:56px;height:40px;background:#ff8c00;border:2px solid #000;border-radius:3px"></div>`;
-  return `<div style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:56px;height:40px;background:#ff8c00;border:2px solid #000;border-radius:3px;font-weight:900;color:#000;font-size:.65rem;line-height:1.2"><div style="border-bottom:1.5px solid #000;width:100%;text-align:center;padding:1px 0">${h||''}</div><div style="padding:1px 0">${un}</div></div>`;
+  if(window.ADR_LABELS&&window.ADR_LABELS.renderKemler){
+    return window.ADR_LABELS.renderKemler(h||'',un,{width:64});
+  }
+  if(!h&&!un) return `<div aria-label="Boş turuncu Kemler levhası" style="display:inline-flex;width:64px;height:48px;background:#f28c00;border:3px solid #000"></div>`;
+  return `<div aria-label="Kemler levhası ${h||''} / ${un}" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:64px;height:48px;background:#f28c00;border:3px solid #000;font-weight:900;color:#000;font-size:.72rem;line-height:1.2"><div style="border-bottom:3px solid #000;width:100%;text-align:center;padding:1px 0">${h||''}</div><div style="padding:1px 0">${un}</div></div>`;
 }
 
 function renderProductFacts(product){

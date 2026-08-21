@@ -112,6 +112,25 @@
     return '<rect x="4" y="22" width="92" height="56" rx="4" fill="#fff" stroke="#111" stroke-width="3"/><text x="50" y="54" text-anchor="middle" font-family="Arial,sans-serif" font-size="'+(word.length>8?'10':'13')+'" font-weight="900">'+esc(word)+'</text>';
   }
 
+  function renderKemler(hazard,un,opts){
+    opts=opts||{};
+    var width=Number(opts.width)||64;
+    var height=Math.round(width*0.75);
+    var hazardText=String(hazard||'').replace(/[^0-9X]/gi,'').toUpperCase().slice(0,4);
+    var unText=String(un||'').replace(/UN\s*/i,'').replace(/\D/g,'').slice(0,4);
+    var numbered=!!(hazardText||unText);
+    var uid='kemler-'+(++renderSerial);
+    var title=numbered?('Kemler levhası '+hazardText+' / '+unText):'Boş turuncu Kemler levhası';
+    var figures=numbered?
+      '<line x1="0" y1="150" x2="400" y2="150" stroke="#0b0b0b" stroke-width="15"/>'+
+      '<text x="200" y="126" text-anchor="middle" font-family="Arial Narrow,DIN Condensed,Arial,sans-serif" font-size="104" font-weight="900" letter-spacing="5" fill="#050505">'+esc(hazardText)+'</text>'+
+      '<text x="200" y="270" text-anchor="middle" font-family="Arial Narrow,DIN Condensed,Arial,sans-serif" font-size="104" font-weight="900" letter-spacing="5" fill="#050505">'+esc(unText)+'</text>':'';
+    return '<svg class="kemler-plate" role="img" aria-label="'+esc(title)+'" viewBox="0 0 400 300" width="'+width+'" height="'+height+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<title>'+esc(title)+'</title><defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb02e"/><stop offset=".42" stop-color="#f28c00"/><stop offset="1" stop-color="#d96f00"/></linearGradient></defs>'+
+      '<rect x="8" y="8" width="384" height="284" rx="2" fill="url(#'+uid+')" stroke="#0b0b0b" stroke-width="15"/>'+
+      '<path d="M24 32h352" stroke="#ffd071" stroke-width="6" opacity=".45"/>'+figures+'</svg>';
+  }
+
   function render(code,opts){
     opts=opts||{};
     var size=Number(opts.size)||46;
@@ -121,5 +140,5 @@
     return '<svg class="adr-label" role="img" aria-label="'+esc(title)+'" viewBox="0 0 100 100" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg" title="'+esc(title)+'">'+inner+'</svg>';
   }
 
-  global.ADR_LABELS={render:render,names:LABEL_NAMES,supported:Object.keys(LABEL_NAMES)};
+  global.ADR_LABELS={render:render,renderKemler:renderKemler,names:LABEL_NAMES,supported:Object.keys(LABEL_NAMES)};
 })(window);

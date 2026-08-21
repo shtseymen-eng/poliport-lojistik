@@ -45,7 +45,7 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 .tag.cur{background:var(--pr);color:#fff}
 .diamonds{display:flex;gap:4px;flex-wrap:nowrap;align-items:center}
 .adr-label{display:inline-block;vertical-align:middle;flex:0 0 auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
-.source-logo{display:block;width:58px;height:34px;object-fit:contain;margin:auto;transform:scale(1.15)}
+.source-logo{display:block;width:58px;height:34px;object-fit:contain;margin:auto;transform:scale(1.55)}
 .vehicle-type{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 9px;border-radius:12px;background:#e8f0fb;color:var(--pr);font-size:.72rem;font-weight:800}
 .marking-stage{position:relative;display:inline-block;width:100%;max-width:720px}
 .marking-stage>img{width:100%;border-radius:9px;display:block}
@@ -120,7 +120,7 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 .intl-card h3{font-size:.92rem;margin-bottom:14px;padding-left:10px;border-left:4px solid var(--pr)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:600px){.two-col{grid-template-columns:1fr}.vcat-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.source-logo{width:48px;height:29px}.ptable th,.ptable td{padding:7px 6px}.marking-pin .adr-label{width:30px;height:30px}}
+@media(max-width:700px){.source-logo{width:48px;height:29px;transform:scale(1.4)}.ptable th,.ptable td{padding:7px 6px}.marking-pin .adr-label{width:30px;height:30px}}
 /* BADGE */
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;margin-left:4px}
 
@@ -478,17 +478,17 @@ const TDI_MDI_RULES = [
 const MARK_PINS={
   tanker:{
     1:[
-      {l:11,t:48,ty:'PLT',    lbl:'ÖN'},
-      {l:52,t:33,ty:'DMD',    lbl:'YAN'},
-      {l:84,t:33,ty:'DMD',    lbl:'ARKA'},
-      {l:84,t:48,ty:'PLT',    lbl:'ARKA'},
+      {l:11,t:35,ty:'PLT',    lbl:'ÖN'},
+      {l:52,t:27,ty:'DMD',    lbl:'YAN'},
+      {l:84,t:23,ty:'DMD',    lbl:'ARKA'},
+      {l:84,t:34,ty:'PLT',    lbl:'ARKA'},
     ],
     2:[
-      {l:11,t:48,ty:'PLT_B',  lbl:'ÖN'},
-      {l:47,t:33,ty:'DMD',    lbl:'YAN'},
-      {l:52,t:58,ty:'PLT',    lbl:'YAN'},
-      {l:84,t:33,ty:'DMD',    lbl:'ARKA'},
-      {l:84,t:48,ty:'PLT_B',  lbl:'ARKA'},
+      {l:11,t:35,ty:'PLT_B',  lbl:'ÖN'},
+      {l:47,t:23,ty:'DMD',    lbl:'YAN'},
+      {l:52,t:32,ty:'PLT',    lbl:'YAN'},
+      {l:84,t:23,ty:'DMD',    lbl:'ARKA'},
+      {l:84,t:34,ty:'PLT_B',  lbl:'ARKA'},
     ],
   },
   isotank:{

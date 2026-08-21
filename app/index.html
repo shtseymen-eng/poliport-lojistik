@@ -107,6 +107,24 @@ nav{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
 .kkd-n{font-size:.75rem;font-weight:700;color:var(--txt)}
 .kkd-s{font-size:.65rem;color:var(--sub);margin-top:2px}
 /* MARKING TOOL */
+.mk-product-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:7px;min-width:0}
+.mk-product-row>label{padding-top:7px;font-size:.77rem;font-weight:700;color:var(--pr);white-space:nowrap}
+.mk-product-field{flex:1;min-width:0;width:100%}
+.mk-product-trigger{width:100%;min-height:34px;padding:6px 10px;border:1.5px solid #c0cfe0;border-radius:7px;background:#fff;color:var(--txt);display:flex;align-items:center;justify-content:space-between;gap:9px;text-align:left;font-size:.77rem;cursor:pointer}
+.mk-product-trigger:hover,.mk-product-trigger[aria-expanded="true"]{border-color:var(--pr);box-shadow:0 0 0 2px rgba(27,79,138,.09)}
+.mk-product-trigger-text{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk-product-arrow{flex:0 0 auto;color:var(--pr);font-size:.68rem;transition:transform .16s ease}
+.mk-product-trigger[aria-expanded="true"] .mk-product-arrow{transform:rotate(180deg)}
+.mk-product-menu{width:100%;margin-top:5px;border:1px solid #c9d6e5;border-radius:9px;background:#fff;box-shadow:0 8px 22px rgba(24,55,91,.14);overflow:hidden}
+.mk-product-menu[hidden]{display:none}
+.mk-product-search-wrap{padding:8px;border-bottom:1px solid #e5ebf2;background:#f7f9fc}
+.mk-product-search{width:100%;padding:7px 9px;border:1.5px solid #c6d4e3;border-radius:7px;font-size:.76rem;outline:none}
+.mk-product-search:focus{border-color:var(--pr);box-shadow:0 0 0 2px rgba(27,79,138,.09)}
+.mk-product-options{max-height:min(265px,38vh);overflow-y:auto;overscroll-behavior:contain;padding:4px;scrollbar-gutter:stable}
+.mk-product-option{width:100%;display:block;padding:8px 9px;border:0;border-radius:6px;background:#fff;color:var(--txt);text-align:left;font-size:.75rem;line-height:1.35;cursor:pointer}
+.mk-product-option:hover,.mk-product-option:focus{background:#eaf2fb;color:var(--pr);outline:none}
+.mk-product-option.selected{background:var(--pr);color:#fff;font-weight:700}
+.mk-product-empty{display:none;padding:13px 10px;color:var(--sub);text-align:center;font-size:.75rem}
 
 /* REQUIREMENTS */
 .req-hero{position:relative;overflow:hidden;min-height:126px;display:flex;align-items:flex-end;background-image:linear-gradient(90deg,rgba(9,44,80,.96),rgba(27,79,138,.72),rgba(27,79,138,.28)),url('assets/poliport/sivi-yuk-tanklari.jpg');background-size:cover;background-position:center 52%;color:#fff;border:none;padding:22px}
@@ -1485,6 +1503,70 @@ function setMkProd(idx,name){
   renderMarking();
 }
 
+function mkEscapeHtml(value){
+  return String(value==null?'':value).replace(/[&<>"']/g,function(char){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char];
+  });
+}
+
+function closeMkProductMenus(exceptIdx){
+  document.querySelectorAll('.mk-product-menu').forEach(function(menu){
+    if(String(exceptIdx)!==menu.dataset.index){
+      menu.hidden=true;
+      var trigger=document.getElementById('mk-product-trigger-'+menu.dataset.index);
+      if(trigger) trigger.setAttribute('aria-expanded','false');
+    }
+  });
+}
+
+function toggleMkProductMenu(idx,event){
+  if(event) event.stopPropagation();
+  var menu=document.getElementById('mk-product-menu-'+idx);
+  var trigger=document.getElementById('mk-product-trigger-'+idx);
+  if(!menu||!trigger) return;
+  var willOpen=menu.hidden;
+  closeMkProductMenus(idx);
+  menu.hidden=!willOpen;
+  trigger.setAttribute('aria-expanded',willOpen?'true':'false');
+  if(willOpen){
+    var search=document.getElementById('mk-product-search-'+idx);
+    if(search){
+      search.value='';
+      filterMkProductOptions(idx,'');
+      setTimeout(function(){search.focus({preventScroll:true});},0);
+    }
+    setTimeout(function(){trigger.scrollIntoView({block:'nearest',behavior:'smooth'});},20);
+  }
+}
+
+function filterMkProductOptions(idx,query){
+  var menu=document.getElementById('mk-product-menu-'+idx);
+  if(!menu) return;
+  var needle=String(query||'').toLocaleLowerCase('tr').trim();
+  var visible=0;
+  menu.querySelectorAll('.mk-product-option').forEach(function(option){
+    var match=!needle||option.textContent.toLocaleLowerCase('tr').includes(needle);
+    option.hidden=!match;
+    if(match) visible++;
+  });
+  var empty=menu.querySelector('.mk-product-empty');
+  if(empty) empty.style.display=visible?'none':'block';
+}
+
+function chooseMkProduct(idx,productIdx){
+  var product=PRODUCTS[productIdx];
+  if(product) setMkProd(idx,product.name);
+}
+
+function handleMkProductKey(event,idx){
+  if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown'){
+    event.preventDefault();
+    toggleMkProductMenu(idx,event);
+  } else if(event.key==='Escape'){
+    closeMkProductMenus();
+  }
+}
+
 function renderMkProdSelectors(){
   var w=document.getElementById('mk-prod-wrap');
   if(!w) return;
@@ -1492,18 +1574,30 @@ function renderMkProdSelectors(){
   var h='';
   for(var i=0;i<mkS.qty;i++){
     var cur=mkS.prods[i];
-    h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;min-width:0">'+
-      '<label style="font-size:.77rem;font-weight:700;color:#1B4F8A;white-space:nowrap">'+(mkS.qty>1?'Ürün '+(i+1)+':':'Ürün:')+'</label>'+
-      '<select onchange="setMkProd('+i+',this.value)" style="flex:1;min-width:0;width:100%;max-width:100%;padding:5px 8px;border:1.5px solid #c0cfe0;border-radius:7px;font-size:.77rem">'+
-        '<option value="">— Ürün seçin —</option>'+
-        sorted.map(function(p){
-          var sel=(cur&&cur.name===p.name)?' selected':'';
-          return '<option value="'+p.name.replace(/"/g,'&quot;')+'"'+sel+'>'+p.name+(p.un?' ('+p.un+')':'')+'</option>';
-        }).join('')+
-      '</select></div>';
+    var selectedText=cur?cur.name+(cur.un?' ('+cur.un+')':''):'— Ürün seçin —';
+    var optionHtml=sorted.map(function(product){
+      var productIdx=PRODUCTS.indexOf(product);
+      var selected=cur&&cur.name===product.name;
+      return '<button type="button" role="option" aria-selected="'+(selected?'true':'false')+'" class="mk-product-option'+(selected?' selected':'')+'" onclick="chooseMkProduct('+i+','+productIdx+')">'+
+        mkEscapeHtml(product.name+(product.un?' ('+product.un+')':''))+'</button>';
+    }).join('');
+    h+='<div class="mk-product-row">'+
+      '<label id="mk-product-label-'+i+'">'+(mkS.qty>1?'Ürün '+(i+1)+':':'Ürün:')+'</label>'+
+      '<div class="mk-product-field">'+
+        '<button type="button" id="mk-product-trigger-'+i+'" class="mk-product-trigger" aria-labelledby="mk-product-label-'+i+' mk-product-trigger-'+i+'" aria-haspopup="listbox" aria-expanded="false" aria-controls="mk-product-menu-'+i+'" onclick="toggleMkProductMenu('+i+',event)" onkeydown="handleMkProductKey(event,'+i+')">'+
+          '<span class="mk-product-trigger-text">'+mkEscapeHtml(selectedText)+'</span><span class="mk-product-arrow">▼</span></button>'+
+        '<div id="mk-product-menu-'+i+'" class="mk-product-menu" data-index="'+i+'" hidden>'+
+          '<div class="mk-product-search-wrap"><input id="mk-product-search-'+i+'" class="mk-product-search" type="search" placeholder="Ürün adı veya UN numarası ara" aria-label="Ürün listesinde ara" oninput="filterMkProductOptions('+i+',this.value)" onkeydown="if(event.key===\'Escape\'){closeMkProductMenus();document.getElementById(\'mk-product-trigger-'+i+'\').focus()}"></div>'+
+          '<div class="mk-product-options" role="listbox" aria-labelledby="mk-product-label-'+i+'">'+optionHtml+'<div class="mk-product-empty">Eşleşen ürün bulunamadı.</div></div>'+
+        '</div>'+
+      '</div></div>';
   }
   w.innerHTML=h;
 }
+
+document.addEventListener('click',function(event){
+  if(!event.target.closest('.mk-product-field')) closeMkProductMenus();
+});
 
 function prepareMarking(){
   var selected=mkS.prods.slice(0,mkS.qty);

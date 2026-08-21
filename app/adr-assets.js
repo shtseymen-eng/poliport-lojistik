@@ -14,6 +14,15 @@
     'excepted':'İstisnai Miktar','danger':'Tehlike','warning':'Uyarı','overpack':'Üst Ambalaj','orientation':'Yön Oku','hot':'Sıcak Madde'
   };
 
+  var CLASS_ASSETS={
+    '1':'class-1.svg','1.4':'class-1-4.svg','1.5':'class-1-5.svg','1.6':'class-1-6.svg',
+    '2.1':'class-2-1.svg','2.2':'class-2-2.svg','2.3':'class-2-3.svg','3':'class-3.svg',
+    '4.1':'class-4-1.svg','4.2':'class-4-2.svg','4.3':'class-4-3.svg',
+    '5.1':'class-5-1.svg','5.2':'class-5-2.svg','6.1':'class-6-1.svg','6.2':'class-6-2.svg',
+    '7':'class-7d.svg','7A':'class-7a.svg','7B':'class-7b.svg','7C':'class-7c.svg','7D':'class-7d.svg','7E':'class-7e.svg',
+    '8':'class-8.svg','9':'class-9.svg','9A':'class-9a.svg'
+  };
+
   function esc(value){
     return String(value==null?'':value).replace(/[&<>"']/g,function(ch){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
@@ -135,10 +144,14 @@
     opts=opts||{};
     var size=Number(opts.size)||46;
     var title=LABEL_NAMES[code]||('ADR '+code);
+    var asset=CLASS_ASSETS[code];
+    if(asset){
+      return '<img class="adr-label" src="assets/adr/'+asset+'?v=20260821" alt="'+esc(title)+'" title="'+esc(title)+'" width="'+size+'" height="'+size+'" decoding="async" draggable="false">';
+    }
     var uid='adr-'+(++renderSerial);
-    var inner=(/^\d/.test(code))?makeClass(code,uid):makeOther(code);
+    var inner=makeOther(code);
     return '<svg class="adr-label" role="img" aria-label="'+esc(title)+'" viewBox="0 0 100 100" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg" title="'+esc(title)+'">'+inner+'</svg>';
   }
 
-  global.ADR_LABELS={render:render,renderKemler:renderKemler,names:LABEL_NAMES,supported:Object.keys(LABEL_NAMES)};
+  global.ADR_LABELS={render:render,renderKemler:renderKemler,names:LABEL_NAMES,classAssets:CLASS_ASSETS,supported:Object.keys(LABEL_NAMES)};
 })(window);

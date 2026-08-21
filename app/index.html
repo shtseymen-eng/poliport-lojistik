@@ -500,7 +500,7 @@ const MARK_PINS={
       {l:10,t:41,ty:'PLT_B',  lbl:'ÇEKİCİ ÖN'},
       {l:57,t:29,ty:'DMD',    lbl:'TANK SAĞ YAN'},
       {l:57,t:39,ty:'PLT',    lbl:'TANK SAĞ YAN'},
-      {l:75,t:42,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
+      {l:87,t:42,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
       {l:18,t:61,ty:'DMD',    lbl:'TANK ÖN'},
       {l:57,t:55,ty:'DMD',    lbl:'TANK SOL YAN'},
       {l:57,t:66,ty:'PLT',    lbl:'TANK SOL YAN'},
@@ -510,7 +510,7 @@ const MARK_PINS={
       {l:10,t:41,ty:'PLT_B',  lbl:'ÇEKİCİ ÖN'},
       {l:57,t:29,ty:'DMD',    lbl:'TANK SAĞ YAN'},
       {l:57,t:39,ty:'PLT',    lbl:'TANK SAĞ YAN'},
-      {l:75,t:42,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
+      {l:87,t:42,ty:'PLT_B',  lbl:'DORSE ALT/ARKA'},
       {l:18,t:61,ty:'DMD',    lbl:'TANK ÖN'},
       {l:57,t:55,ty:'DMD',    lbl:'TANK SOL YAN'},
       {l:57,t:66,ty:'PLT',    lbl:'TANK SOL YAN'},
@@ -589,13 +589,15 @@ function diamondSVG(code,size){
   return window.ADR_LABELS?window.ADR_LABELS.render(code,{size:size||46}):'';
 }
 
-function plateSVG(h,u){
+function plateSVG(h,u,width){
   const un=(u||'').replace(/UN\s*/i,'').trim().substring(0,4);
+  const plateWidth=width||64;
+  const plateHeight=Math.round(plateWidth*.75);
   if(window.ADR_LABELS&&window.ADR_LABELS.renderKemler){
-    return window.ADR_LABELS.renderKemler(h||'',un,{width:64});
+    return window.ADR_LABELS.renderKemler(h||'',un,{width:plateWidth});
   }
-  if(!h&&!un) return `<div aria-label="Boş turuncu Kemler levhası" style="display:inline-flex;width:64px;height:48px;background:#f28c00;border:3px solid #000"></div>`;
-  return `<div aria-label="Kemler levhası ${h||''} / ${un}" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:64px;height:48px;background:#f28c00;border:3px solid #000;font-weight:900;color:#000;font-size:.72rem;line-height:1.2"><div style="border-bottom:3px solid #000;width:100%;text-align:center;padding:1px 0">${h||''}</div><div style="padding:1px 0">${un}</div></div>`;
+  if(!h&&!un) return `<div aria-label="Boş turuncu Kemler levhası" style="display:inline-flex;width:${plateWidth}px;height:${plateHeight}px;background:#f28c00;border:3px solid #000"></div>`;
+  return `<div aria-label="Kemler levhası ${h||''} / ${un}" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:${plateWidth}px;height:${plateHeight}px;background:#f28c00;border:3px solid #000;font-weight:900;color:#000;font-size:.72rem;line-height:1.2"><div style="border-bottom:3px solid #000;width:100%;text-align:center;padding:1px 0">${h||''}</div><div style="padding:1px 0">${un}</div></div>`;
 }
 
 function renderProductFacts(product){
@@ -622,11 +624,12 @@ function renderVehicleMarking(cat,qty,products,options){
   const photo=VEHICLE_PHOTOS[photoKey]||VEHICLE_PHOTOS.tanker;
   const pins=((MARK_PINS[cat]||{})[qty]||(MARK_PINS[cat]||{})[1]||[]);
   const multiple=adrProducts.length>1;
+  const plateWidth=cat==='isotank'?52:64;
 
   function platesForPin(pin){
     const blank=pin.ty==='PLT_B'||(multiple&&(pin.lbl==='ÖN'||pin.lbl==='ARKA'));
-    if(blank) return plateSVG('','');
-    return adrProducts.map(function(product){return plateSVG(product.hazard,getUnNumber(product));}).join('');
+    if(blank) return plateSVG('','',plateWidth);
+    return adrProducts.map(function(product){return plateSVG(product.hazard,getUnNumber(product),plateWidth);}).join('');
   }
 
   function labelsForPin(){

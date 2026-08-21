@@ -112,7 +112,14 @@
       var center=code==='limited-icao'?'<text x="50" y="57" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="900">Y</text>':'';
       return diamond('<polygon points="50,2 98,50 50,22 2,50" fill="#111"/><polygon points="2,50 50,78 98,50 50,98" fill="#111"/>'+center,'#fff');
     }
-    if(code==='environment') return diamond('<path d="M26 65h52M37 62c-3-16 5-30 20-39-1 18-7 31-20 39Zm27 1c5-10 11-15 18-16-1 9-7 16-18 16Z" fill="none" stroke="#111" stroke-width="3"/><path d="M56 69c7-5 14-5 22 0-8 8-15 8-22 0Z" fill="#111"/>','#fff');
+    if(code==='environment') return diamond(
+      '<g fill="#111">'+
+        '<path d="M17 73h68v4H17Z"/>'+
+        '<path d="M36 73 43 57l-1-13-10-9 3-4 7 7-1-17h5l2 15 8-10 4 3-11 14 1 12 8-8 4 4-11 11 5 11Z"/>'+
+        '<path d="M55 68c5-8 13-11 22-8l7-5-1 9 1 9-8-5c-8 5-15 5-21 0Z"/>'+
+      '</g><circle cx="75" cy="63" r="1.7" fill="#fff"/>',
+      '#fff'
+    );
     if(code==='orange-blank') return '<rect x="3" y="18" width="94" height="64" rx="2" fill="#f28c00" stroke="#111" stroke-width="3"/>';
     if(code==='excepted') return diamond('<text x="50" y="60" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="900">E</text>','#fff');
     if(code==='orientation') return '<rect x="8" y="7" width="84" height="86" fill="#fff" stroke="#111" stroke-width="2"/><path d="M34 75V30m0 0-10 13m10-13 10 13m22 32V30m0 0-10 13m10-13 10 13" fill="none" stroke="#111" stroke-width="5"/>';
